@@ -10,3 +10,5 @@
 0:0:0:0:0:0:0:1 - - [14/Nov/2025:16:47:53 +0900] "GET /OfficeSystem_Hibernate2/img/left_triangle.png HTTP/1.1" 200 562 http-bio-8080-exec-10 7
 0:0:0:0:0:0:0:1 - - [14/Nov/2025:16:47:53 +0900] "POST /OfficeSystem_Hibernate2/GetPage HTTP/1.1" 200 7768 http-bio-8080-exec-9 44
 0:0:0:0:0:0:0:1 - - [14/Nov/2025:16:47:53 +0900] "POST /OfficeSystem_Hibernate2/GetPage HTTP/1.1" 200 7741 http-bio-8080-exec-9 16
+0:0:0:0:0:0:0:1 - - [14/Nov/2025:16:48:30 +0900] "GET /OfficeSystem_Hibernate2/Login HTTP/1.1" 200 2485 http-bio-8080-exec-9 334
+0:0:0:0:0:0:0:1 - - [14/Nov/2025:16:48:33 +0900] "GET /OfficeSystem_Hibernate2/Login HTTP/1.1" 200 2485 http-bio-8080-exec-9 3
