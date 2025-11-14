@@ -1,0 +1,45 @@
+# Mavenでアプリケーションを実行する方法
+
+このプロジェクトはSpring MVC + Hibernateを使用したWARパッケージのWebアプリケーションです。`pom.xml`に`tomcat7-maven-plugin`が設定されているため、Mavenから直接Tomcatを起動して実行できます。
+
+## 実行方法
+
+### 方法1: Maven Tomcatプラグインで直接実行（推奨）
+
+プロジェクトルート（`pom.xml`があるディレクトリ）で以下のコマンドを実行：
+
+```bash
+mvn clean tomcat7:run
+```
+
+または、ビルドと実行を分ける場合：
+
+```bash
+# 1. ビルド
+mvn clean package
+
+# 2. Tomcatで実行
+mvn tomcat7:run
+```
+
+**デフォルト設定:**
+
+- ポート: 8080
+- コンテキストパス: `/OfficeSystem_Hibernate2`
+- URL: `http://localhost:8080/OfficeSystem_Hibernate2`
+
+### 方法2: 外部Tomcatサーバーにデプロイ
+
+1. WARファイルをビルド：
+```bash
+mvn clean package
+```
+
+2. 生成されたWARファイル（`target/OfficeSystem_Hibernate2.war`）を外部Tomcatの`webapps`ディレクトリにコピー
+
+3. Tomcatを起動
+
+## 注意事項
+
+- 実行前にMySQLデータベースが起動していることを確認してください（`src/main/resources/ds/datasource-cfg.properties`で設定）
+- ポート8080が使用中の場合は、`pom.xml`の`tomcat7-maven-plugin`にポート設定を追加する必要があります
