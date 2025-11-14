@@ -1,0 +1,5 @@
+0:0:0:0:0:0:0:1 - - [28/Aug/2018:20:09:42 +0900] "GET /OfficeSystem/Login HTTP/1.1" 200 1336 http-bio-8080-exec-1 2223
+0:0:0:0:0:0:0:1 - - [28/Aug/2018:20:09:43 +0900] "GET /OfficeSystem/js/jquery-1.10.2.min.js;jsessionid=C1014345DE6E401740B3536EE8312009 HTTP/1.1" 200 94161 http-bio-8080-exec-3 803
+0:0:0:0:0:0:0:1 - - [28/Aug/2018:20:09:55 +0900] "GET /OfficeSystem/Find HTTP/1.1" 200 17080 http-bio-8080-exec-5 770
+0:0:0:0:0:0:0:1 - - [28/Aug/2018:20:09:55 +0900] "GET /OfficeSystem/js/jquery-1.10.2.min.js HTTP/1.1" 200 94161 http-bio-8080-exec-8 16
+0:0:0:0:0:0:0:1 - - [28/Aug/2018:20:09:55 +0900] "GET /OfficeSystem/css/bootstrap.css HTTP/1.1" 200 127317 http-bio-8080-exec-7 211
