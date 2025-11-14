@@ -21,6 +21,11 @@ public class LoginController {
 		return "Login";
 	}
 
+	@RequestMapping(value="/Register", method = RequestMethod.GET)
+	public String Register() {
+		return "Register";
+	}
+
 	@RequestMapping(value="/Login", params = {"userId", "password","email"}, method = RequestMethod.POST, produces="text/plain;charset=utf-8")//email
 
 	public @ResponseBody String Login(
