@@ -1,3 +1,2 @@
-0:0:0:0:0:0:0:1 - - [14/Nov/2025:17:08:18 +0900] "GET /OfficeSystem_Hibernate2/Login HTTP/1.1" 200 5350 http-bio-8080-exec-1 2396
-0:0:0:0:0:0:0:1 - - [14/Nov/2025:17:08:19 +0900] "GET /OfficeSystem_Hibernate2/Register HTTP/1.1" 500 2452 http-bio-8080-exec-3 27
-0:0:0:0:0:0:0:1 - - [14/Nov/2025:17:08:26 +0900] "GET /OfficeSystem_Hibernate2/Register HTTP/1.1" 500 2452 http-bio-8080-exec-2 15
+0:0:0:0:0:0:0:1 - - [14/Nov/2025:17:10:53 +0900] "GET /OfficeSystem_Hibernate2/Login HTTP/1.1" 200 5350 http-bio-8080-exec-1 1805
+0:0:0:0:0:0:0:1 - - [14/Nov/2025:17:10:55 +0900] "GET /OfficeSystem_Hibernate2/Register HTTP/1.1" 200 7001 http-bio-8080-exec-3 489
