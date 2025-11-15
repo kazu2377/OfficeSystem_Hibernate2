@@ -1,5 +1,6 @@
 package G_T.OfficeSystem.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -9,10 +10,13 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Repository
 @Transactional //データベースとのやり取りする処理が失敗した場合、データを前の状態に戻す
 public class UserInfoModelDAO extends JdbcDaoSupport {
+
+	private static final int DEFAULT_GENERAL_USER_TYPE = 2;
 
 	@Autowired											//アノテーション「@Autowired」を利用されている為、
 	public UserInfoModelDAO(DataSource dataSource) {	//「UserInfoModelDAO」クラスのコンストラクターが呼ばれるとき、
@@ -20,21 +24,62 @@ public class UserInfoModelDAO extends JdbcDaoSupport {
 	}													//このことを「Dependency Injection:（依存性の注入）」と呼ぶ
 
 	public Integer CheckUser(LoginModel model) {		//ログインユーザーがデータベースに存在するかどうかチェックするメソッド
-		String sql = "select count(*) from user_master where 1 = 1";
+		StringBuilder sql = new StringBuilder("select count(*) from user_master where 1 = 1");
+		List<Object> params = new ArrayList<>();
 
-		if(model.getUserId() != "") {
-			sql += " and USER_ID = '" + model.getUserId() + " '";
-		}
+		if (model != null) {
+			if (StringUtils.hasText(model.getUserId())) {
+				sql.append(" and USER_ID = ?");
+				params.add(model.getUserId());
+			}
 
-		if(model.getPassword() != "") {
-			sql += " and PASSWORD = '" + model.getPassword() + "'";
+			if (StringUtils.hasText(model.getPassword())) {
+				sql.append(" and PASSWORD = ?");
+				params.add(model.getPassword());
+			}
+
+			if (StringUtils.hasText(model.getEmail())) {
+				sql.append(" and EMAIL = ?");
+				params.add(model.getEmail());
+			}
 		}
 
 		try {
-			return getJdbcTemplate().queryForObject(sql, new Object[] { }, Integer.class);
+			return getJdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
 		} catch (EmptyResultDataAccessException e) {
 			return null;
 		}
+	}
+
+	public boolean existsUserId(String userId) {
+		if (!StringUtils.hasText(userId)) {
+			return false;
+		}
+		String sql = "select count(*) from user_master where USER_ID = ?";
+		Integer count = getJdbcTemplate().queryForObject(sql, new Object[] { userId }, Integer.class);
+		return count != null && count > 0;
+	}
+
+	public boolean existsEmail(String email) {
+		if (!StringUtils.hasText(email)) {
+			return false;
+		}
+		String sql = "select count(*) from user_master where EMAIL = ?";
+		Integer count = getJdbcTemplate().queryForObject(sql, new Object[] { email }, Integer.class);
+		return count != null && count > 0;
+	}
+
+	public void createUser(LoginModel model) {
+		if (model == null) {
+			return;
+		}
+		String sql = "insert into user_master (USER_ID, PASSWORD, EMAIL, INSERTTIME, UPDATETIME, TYPE) "
+				+ "values (?, ?, ?, now(), now(), ?)";
+		getJdbcTemplate().update(sql,
+				model.getUserId(),
+				model.getPassword(),
+				model.getEmail(),
+				DEFAULT_GENERAL_USER_TYPE);
 	}
 
 	public List<UserInfoModel> FindUser(FindConditionModel condition) {

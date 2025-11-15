@@ -218,14 +218,31 @@ public class UserInfoModel {
 	public void setRole(Integer role) {
 		this.role = role;
 	}
+	/**
+	 * 生年月日(birthday)から現在の年齢（満年齢）を計算して返すメソッド。
+	 * birthdayがnullの場合はnullを返す。
+	 * birthdayは「yyyyMMdd」形式の文字列である必要がある。
+	 *
+	 * @return 現在の年齢（満年齢）, birthdayがnullまたは解析不可能な場合はnull
+	 */
 	public Integer getYearOld() {
 		if (birthday != null) {
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-			LocalDate birth = LocalDate.parse(birthday, formatter);
-			LocalDate today = LocalDate.now();
-	        return Period.between(birth, today).getYears();
-		}
-		else {
+			try {
+				// birthday文字列を"yyyyMMdd"形式でLocalDate型に変換する
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+				LocalDate birth = LocalDate.parse(birthday, formatter);
+
+				// 今日の日付を取得
+				LocalDate today = LocalDate.now();
+
+				// 生年月日と今日の日付の年数差分（満年齢）を計算して返却
+				return Period.between(birth, today).getYears();
+			} catch (Exception e) {
+				// 例外が発生した場合（birthdayの形式が不正など）はnullを返す
+				return null;
+			}
+		} else {
+			// birthdayがnullの場合はnullを返す
 			return null;
 		}
 	}

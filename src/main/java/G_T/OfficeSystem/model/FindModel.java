@@ -23,10 +23,10 @@ public class FindModel {
 
 	@Autowired
 	private SessionFactory sessionFactory;
-//	private List<UserInfoModel> allUserList;  //検索結果一覧
-//	private List<UserInfoModel> showUserList;
+	// private List<UserInfoModel> allUserList; //検索結果一覧
+	// private List<UserInfoModel> showUserList;
 
-	//Hibernate対応
+	// Hibernate対応
 	private List<HibUserMasterModel> allUserList;
 	private List<HibUserMasterModel> showUserList;
 
@@ -48,13 +48,14 @@ public class FindModel {
 	public List<HibUserMasterModel> getAllUserList() {
 		return allUserList;
 	}
+
 	public void setAllUserList(List<HibUserMasterModel> allUserList) {
 		this.allUserList = allUserList;
 	}
 
-	//ユーザー情報を検索し、検索結果一覧に設定する
+	// ユーザー情報を検索し、検索結果一覧に設定する
 	public void FindUser(FindConditionModel condition) {
-//		setAllUserList(userInfoModelDAO.FindUser(condition));
+		// setAllUserList(userInfoModelDAO.FindUser(condition));
 
 		setAllUserList(FindUserByCondition(condition));
 
@@ -63,40 +64,55 @@ public class FindModel {
 
 	}
 
-	public void SortAll(String sortColumn, String sortOrder)
-	{
+	public void SortAll(String sortColumn, String sortOrder) {
+		if (this.allUserList == null || this.allUserList.isEmpty()) {
+			return;
+		}
 
-		Collections.sort(this.allUserList, new Comparator<HibUserMasterModel>(){
-			public int compare(HibUserMasterModel u1, HibUserMasterModel u2){
+		Collections.sort(this.allUserList, new Comparator<HibUserMasterModel>() {
+			public int compare(HibUserMasterModel u1, HibUserMasterModel u2) {
 				int invertFlag = -1;
-				if (sortOrder == null || sortOrder.equals("▲") || sortOrder.equals("")){
-					invertFlag = 1;//正負を入れ替える
+				if (sortOrder == null || sortOrder.equals("▲") || sortOrder.equals("")) {
+					invertFlag = 1;// 正負を入れ替える
 				}
 				if (("ユーザーID").equals(sortColumn)) {
 					return invertFlag * (u1.getUserId().compareTo(u2.getUserId()) >= 0 ? 1 : -1);
-				}
-				else if (("氏名").equals(sortColumn)) {
-					return invertFlag * (u1.getHibProfileInfoModel().getUserName().compareTo(u2.getHibProfileInfoModel().getUserName()) >= 0 ? 1 : -1);
-				}
-				else if(("性別").equals(sortColumn)) {
-					//return 1;
+				} else if (("氏名").equals(sortColumn)) {
+					if (u1.getHibProfileInfoModel() == null || u2.getHibProfileInfoModel() == null) {
+						return 0;
+					}
+					return invertFlag
+							* (u1.getHibProfileInfoModel().getUserName().compareTo(u2.getHibProfileInfoModel().getUserName()) >= 0 ? 1
+									: -1);
+				} else if (("性別").equals(sortColumn)) {
+					if (u1.getHibProfileInfoModel() == null || u2.getHibProfileInfoModel() == null) {
+						return 0;
+					}
 					int a = u1.getHibProfileInfoModel().getSex().compareTo(u2.getHibProfileInfoModel().getSex());
-					int b = a >= 0 ? 1 : -1 ;
+					int b = a >= 0 ? 1 : -1;
 					int c = invertFlag * b;
-					System.out.println(a + "*" + b + "*" + c + "*" + u1.getUserId() + "*" + u2.getUserId());
 					return c;
-					//return invertFlag * (u1.getSex().compareTo(u2.getSex()) > 0 ? 1 : -1 );
-				}
-				else if(("電話番号").equals(sortColumn)) {
-					return invertFlag * (u1.getHibProfileInfoModel().getTel().compareTo(u2.getHibProfileInfoModel().getTel()) >= 0 ? 1 : -1 );
-				}
-				else if(("郵便番号").equals(sortColumn)) {
-					return invertFlag * (u1.getHibProfileInfoModel().getPostcode().compareTo(u2.getHibProfileInfoModel().getPostcode()) >= 0 ? 1 : -1 );
-				}
-				else if(("住所").equals(sortColumn)) {
-					return invertFlag * (u1.getHibProfileInfoModel().getAddress().compareTo(u2.getHibProfileInfoModel().getAddress()) >= 0 ? 1 : -1 );
-				}
-				else {
+				} else if (("電話番号").equals(sortColumn)) {
+					if (u1.getHibProfileInfoModel() == null || u2.getHibProfileInfoModel() == null) {
+						return 0;
+					}
+					return invertFlag
+							* (u1.getHibProfileInfoModel().getTel().compareTo(u2.getHibProfileInfoModel().getTel()) >= 0 ? 1 : -1);
+				} else if (("郵便番号").equals(sortColumn)) {
+					if (u1.getHibProfileInfoModel() == null || u2.getHibProfileInfoModel() == null) {
+						return 0;
+					}
+					return invertFlag
+							* (u1.getHibProfileInfoModel().getPostcode().compareTo(u2.getHibProfileInfoModel().getPostcode()) >= 0 ? 1
+									: -1);
+				} else if (("住所").equals(sortColumn)) {
+					if (u1.getHibProfileInfoModel() == null || u2.getHibProfileInfoModel() == null) {
+						return 0;
+					}
+					return invertFlag
+							* (u1.getHibProfileInfoModel().getAddress().compareTo(u2.getHibProfileInfoModel().getAddress()) >= 0 ? 1
+									: -1);
+				} else {
 					return invertFlag * 1;
 				}
 			}
@@ -108,19 +124,16 @@ public class FindModel {
 
 	}
 
-	public void GetPage(int showNumber, int currentPage)
-	{
-		if (showNumber == 0 || allUserList.size() <= showNumber)  //改ページが必要ない
+	public void GetPage(int showNumber, int currentPage) {
+		if (allUserList == null || showNumber == 0 || allUserList.size() <= showNumber) // 改ページが必要ない
 		{
 			showUserList = allUserList;
-		}
-		else
-		{
+		} else {
 
 			showUserList = IntStream.range(0, allUserList.size())
-								.filter(index -> index >= (currentPage - 1) * showNumber && index < currentPage * showNumber)
-								.mapToObj(allUserList::get)
-								.collect(Collectors.toList());
+					.filter(index -> index >= (currentPage - 1) * showNumber && index < currentPage * showNumber)
+					.mapToObj(allUserList::get)
+					.collect(Collectors.toList());
 		}
 		this.showNumber = showNumber;
 		this.currentPage = currentPage;
@@ -129,6 +142,7 @@ public class FindModel {
 	public List<HibUserMasterModel> getShowUserList() {
 		return showUserList;
 	}
+
 	public void setShowUserList(List<HibUserMasterModel> showUserList) {
 		this.showUserList = showUserList;
 	}
@@ -136,6 +150,7 @@ public class FindModel {
 	public int getShowNumber() {
 		return showNumber;
 	}
+
 	public void setShowNumber(int showNumber) {
 		this.showNumber = showNumber;
 	}
@@ -143,29 +158,29 @@ public class FindModel {
 	public int getCurrentPage() {
 		return currentPage;
 	}
+
 	public void setCurrentPage(int currentPage) {
 		this.currentPage = currentPage;
 	}
 
-
 	public String getSortOrder() {
-	System.out.println("FindModel. getSortOrder");
-	return sortOrder;
+		System.out.println("FindModel. getSortOrder");
+		return sortOrder;
 	}
 
 	public void setSortOrder(String sortOrder) {
-	System.out.println("FindModel. setSortOrder");
-	this.sortOrder = sortOrder;
+		System.out.println("FindModel. setSortOrder");
+		this.sortOrder = sortOrder;
 	}
 
 	public String getSortColumn() {
-	System.out.println("FindModel. getSortColumn");
-	return sortColumn;
+		System.out.println("FindModel. getSortColumn");
+		return sortColumn;
 	}
 
 	public void setSortColumn(String sortColumn) {
-	System.out.println("FindModel. setSortColumn");
-	this.sortColumn = sortColumn;
+		System.out.println("FindModel. setSortColumn");
+		this.sortColumn = sortColumn;
 	}
 
 	public void Sort(String sortColumn, String sortOrder) {
@@ -179,7 +194,7 @@ public class FindModel {
 			session = sessionFactory.openSession();
 			Criteria criteria = session.createCriteria(HibUserMasterModel.class)
 					.createAlias("hibProfileInfoModel", "p", JoinType.INNER_JOIN);
-			criteria.add(Restrictions.eqProperty("p.userId","userId"));
+			criteria.add(Restrictions.eqProperty("p.userId", "userId"));
 
 			if (condition != null) {
 				if (condition.getUserId() != "") {
@@ -201,22 +216,21 @@ public class FindModel {
 					criteria.add(Restrictions.eq("p.sex", condition.getSex()));
 				}
 
+				// if (condition.getBirthday() != "") {
+				// criteria.add(Restrictions.eq("p.birthday", condition.getBirthday()));
+				// }
 
-//				if (condition.getBirthday() != "") {
-//					criteria.add(Restrictions.eq("p.birthday", condition.getBirthday()));
-//				}
-
-		        if (condition.getBirthday() != null && !condition.getBirthday().equals("")) {
-		        	if(condition.getBirthday1() != null && !condition.getBirthday1().equals("")) {
-		        		criteria.add(Restrictions.like("p.birthday", condition.getBirthday1() + "%"));
-		        	}
-		        	if(condition.getBirthday2() != null && !condition.getBirthday2().equals("")) {
-		        		criteria.add(Restrictions.like("p.birthday", "____" + condition.getBirthday2() + "%"));
-		        	}
-		        	if(condition.getBirthday3() != null && !condition.getBirthday3().equals("")) {
-			        		criteria.add(Restrictions.like("p.birthday", "%" + condition.getBirthday3()));
-		        	}
-		        }
+				if (condition.getBirthday() != null && !condition.getBirthday().equals("")) {
+					if (condition.getBirthday1() != null && !condition.getBirthday1().equals("")) {
+						criteria.add(Restrictions.like("p.birthday", condition.getBirthday1() + "%"));
+					}
+					if (condition.getBirthday2() != null && !condition.getBirthday2().equals("")) {
+						criteria.add(Restrictions.like("p.birthday", "____" + condition.getBirthday2() + "%"));
+					}
+					if (condition.getBirthday3() != null && !condition.getBirthday3().equals("")) {
+						criteria.add(Restrictions.like("p.birthday", "%" + condition.getBirthday3()));
+					}
+				}
 
 				if (condition.getTel() != "") {
 					criteria.add(Restrictions.like("p.tel", "%" + condition.getTel() + "%"));
@@ -230,21 +244,21 @@ public class FindModel {
 					criteria.add(Restrictions.like("p.address", "%" + condition.getAddress() + "%"));
 				}
 
-//				if (condition.getHireDate() != "") {
-//					criteria.add(Restrictions.eq("p.hireDate", condition.getHireDate()));
-//				}
+				// if (condition.getHireDate() != "") {
+				// criteria.add(Restrictions.eq("p.hireDate", condition.getHireDate()));
+				// }
 
-		        if (condition.getHireDate() != null && !condition.getHireDate().equals("")) {
-		        	if(condition.getHireDate1() != null && !condition.getHireDate1().equals("")) {
-		        		criteria.add(Restrictions.like("p.hireDate", condition.getHireDate1() + "%"));
-		        	}
-		        	if(condition.getHireDate2() != null && !condition.getHireDate2().equals("")) {
-	        		criteria.add(Restrictions.like("p.hireDate", "____" + condition.getHireDate2() + "%"));
-		        	}
-		        	if(condition.getHireDate3() != null && !condition.getHireDate3().equals("")) {
-		        		criteria.add(Restrictions.like("p.hireDate", "%" + condition.getHireDate3()));
-		        	}
-		        }
+				if (condition.getHireDate() != null && !condition.getHireDate().equals("")) {
+					if (condition.getHireDate1() != null && !condition.getHireDate1().equals("")) {
+						criteria.add(Restrictions.like("p.hireDate", condition.getHireDate1() + "%"));
+					}
+					if (condition.getHireDate2() != null && !condition.getHireDate2().equals("")) {
+						criteria.add(Restrictions.like("p.hireDate", "____" + condition.getHireDate2() + "%"));
+					}
+					if (condition.getHireDate3() != null && !condition.getHireDate3().equals("")) {
+						criteria.add(Restrictions.like("p.hireDate", "%" + condition.getHireDate3()));
+					}
+				}
 
 				if (condition.getAffiliation() != "") {
 					criteria.add(Restrictions.eq("p.affiliation", condition.getAffiliation()));
@@ -263,14 +277,16 @@ public class FindModel {
 				}
 			}
 
-			return criteria.list();
-		}
-		catch (Exception ex) {
+			@SuppressWarnings("unchecked")
+			List<HibUserMasterModel> result = criteria.list();
+			return result;
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			return null;
-		}
-		finally {
-			session.close();
+		} finally {
+			if (session != null) {
+				session.close();
+			}
 		}
 	}
 
