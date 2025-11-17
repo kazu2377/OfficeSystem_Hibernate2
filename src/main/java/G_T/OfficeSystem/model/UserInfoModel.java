@@ -218,6 +218,8 @@ public class UserInfoModel {
 	public void setRole(Integer role) {
 		this.role = role;
 	}
+
+
 	/**
 	 * 生年月日(birthday)から現在の年齢（満年齢）を計算して返すメソッド。
 	 * birthdayがnullの場合はnullを返す。
