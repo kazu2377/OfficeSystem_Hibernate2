@@ -1,9 +1,18 @@
 # syntax=docker/dockerfile:1.6
 
+# アプリケーションのビルド用ステージ（Maven）
 FROM maven:3.9.6-eclipse-temurin-8 AS builder
+
+# 作業ディレクトリを/appに設定
 WORKDIR /app
+
+# 依存関係情報（pom.xml）をコピー
 COPY pom.xml .
+
+# ソースコードをコピー
 COPY src ./src
+
+# テストをスキップしてMavenでビルド
 RUN mvn -B -DskipTests clean package
 
 FROM tomcat:8.5-jdk8-temurin-jammy

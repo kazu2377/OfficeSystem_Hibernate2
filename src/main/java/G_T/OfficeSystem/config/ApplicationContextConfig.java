@@ -1,4 +1,5 @@
 package G_T.OfficeSystem.config;
+
 import javax.sql.DataSource;
 
 import org.hibernate.SessionFactory;
@@ -26,6 +27,7 @@ import org.springframework.web.servlet.view.tiles3.TilesView;
 public class ApplicationContextConfig {
 	@Autowired
 	private Environment env;
+
 	@Bean(name = "viewResolver")
 	public ViewResolver getViewResolver() {
 		UrlBasedViewResolver viewResolver = new UrlBasedViewResolver();
@@ -33,6 +35,7 @@ public class ApplicationContextConfig {
 		viewResolver.setViewClass(TilesView.class);
 		return viewResolver;
 	}
+
 	@Bean(name = "tilesConfigurer")
 	public TilesConfigurer getTilesConfigurer() {
 		TilesConfigurer tilesConfigurer = new TilesConfigurer();
@@ -40,6 +43,7 @@ public class ApplicationContextConfig {
 		tilesConfigurer.setDefinitions("/WEB-INF/tiles.xml");
 		return tilesConfigurer;
 	}
+
 	@Bean(name = "dataSource")
 	public DataSource getDataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -49,6 +53,7 @@ public class ApplicationContextConfig {
 		dataSource.setPassword(env.getProperty("ds.password"));
 		return dataSource;
 	}
+
 	@Bean(name = "transactionManager")
 	public DataSourceTransactionManager getTransactionManager() {
 		DataSourceTransactionManager txManager = new DataSourceTransactionManager();
@@ -57,22 +62,20 @@ public class ApplicationContextConfig {
 
 		return txManager;
 	}
+
 	@Bean(name = "sessionFactory")
-	public  SessionFactory getSessionFactory() {
+	public SessionFactory getSessionFactory() {
 		try {
-	        // Create the SessionFactory from hibernate.cfg.xml
+			// Create the SessionFactory from hibernate.cfg.xml
 			org.hibernate.cfg.Configuration configuration = new org.hibernate.cfg.Configuration();
-	    	configuration.configure("hibernate.cfg.xml");
-	    	ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
-	    	SessionFactory sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-	        return sessionFactory;
-		}
-		catch (Exception ex) {
+			configuration.configure("hibernate.cfg.xml");
+			ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+					.applySettings(configuration.getProperties()).build();
+			SessionFactory sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+			return sessionFactory;
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			return null;
 		}
-    }
+	}
 }
-
-
-
