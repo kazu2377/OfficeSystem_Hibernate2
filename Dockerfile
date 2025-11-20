@@ -1,4 +1,5 @@
 # syntax=docker/dockerfile:1.6
+# syntax=docker/dockerfile:1.6
 
 # アプリケーションのビルド用ステージ（Maven）
 FROM maven:3.9.6-eclipse-temurin-8 AS builder
